@@ -943,11 +943,15 @@ async function tavilySearch(query, budget, options = {}) {
       );
     }
 
+    const tavilyError = error.response?.data?.detail;
+
+    const detail =
+      typeof tavilyError === "object"
+        ? JSON.stringify(tavilyError)
+        : tavilyError || error.message || "Unknown Tavily error";
+
     throw new Error(
-      `Tavily search failed: ${
-        error.response?.data?.detail ||
-        error.message
-      }`
+      `Tavily search failed: ${detail}`
     );
   }
 }
