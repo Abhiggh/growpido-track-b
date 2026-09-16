@@ -61,7 +61,7 @@ The diagnostic is intentionally gated.
 
 Only claim IDs already marked `verified` can be approved by the reviewer. The server also validates the final approved set before allowing diagnostic generation. This keeps partially verified or unverified claims out of the client-facing narrative.
 
-## Free-tier and usage safety
+## usage safety
 
 The application does not automatically switch to paid usage. Hard per-run limits are controlled through `.env`:
 
@@ -74,24 +74,6 @@ MAX_AI_CALLS_PER_RUN=12
 
 The expected research path is designed to remain within these limits. If a provider returns a quota or rate-limit error, the application stops safely instead of using a paid fallback.
 
-## Project structure
-
-```text
-server.js
-src/
-  research.js
-  safety.js
-public/
-  index.html
-  app.js
-  style.css
-package.json
-package-lock.json
-README.md
-.env
-```
-
-`.env` is local configuration and must never be committed to the repository.
 
 ## Local setup
 
@@ -103,7 +85,7 @@ npm install
 
 ### 2. Configure environment variables
 
-Create a local `.env` file and add your own API credentials and run limits. Keep the file private and never commit it.
+Create a .env file in the project root and add your Gemini and Tavily API keys. Copy the variables from .env.example and replace the placeholders with your own keys.
 
 ### 3. Start the application
 
@@ -155,8 +137,3 @@ Verified facts still require explicit approval before entering the client output
 **Safe usage**  
 Research and AI-call limits are enforced per run, with no automatic paid fallback.
 
-## Assignment scope
-
-This prototype is designed for the Growpido Track B workflow: public-source research of a UAE-based founder, CEO, or fund manager, followed by a defensible public-profile diagnostic.
-
-The system is intended to demonstrate evidence integrity, controlled research, human-in-the-loop approval, and transparent failure handling rather than broad automated prospecting.
