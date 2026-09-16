@@ -1,0 +1,21 @@
+{
+  "name": "growpido-prospect-to-diagnostic",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Evidence-first public-profile research and human-gated diagnostic prototype for Growpido Track B",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "axios": "^1.12.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0"
+  }
+}

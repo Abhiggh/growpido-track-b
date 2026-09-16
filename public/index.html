@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#08111f" />
+  <title>Growpido · Prospect to Diagnostic</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">G</div>
+        <div>
+          <div class="brand-name">GROWPIDO</div>
+          <div class="brand-sub">Prospect to Diagnostic</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="secure-note"><span class="dot"></span> Evidence-first workflow</div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> PUBLIC PROFILE INTELLIGENCE</div>
+          <h1>Turn a public LinkedIn profile into a defensible founder diagnostic.</h1>
+          <p>Research public sources, verify material claims twice, keep weak evidence out, and require a human approval before anything enters the client-facing narrative.</p>
+          <div class="hero-meta">
+            <span><span class="meta-icon">✓</span> Primary-source first</span>
+            <span><span class="meta-icon">✓</span> Human approval gate</span>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="panel-kicker">SYSTEM PRINCIPLE</div>
+          <div class="panel-quote">When evidence is unclear, the system refuses the claim.</div>
+          <div class="panel-foot">Built for high-stakes founder and executive reputation work.</div>
+        </div>
+      </section>
+
+      <section class="card form-card premium-card">
+        <div class="section-head form-head">
+          <div>
+            <div class="card-kicker">START A NEW RESEARCH RUN</div>
+            <h2>Public LinkedIn profile</h2>
+          </div>
+          <div class="input-hint">Any public LinkedIn URL</div>
+        </div>
+        <div class="input-row">
+          <div class="input-wrap">
+            <input id="linkedinUrl" placeholder="linkedin.com/in/" autocomplete="off" />
+          </div>
+          <button id="researchBtn" class="primary-btn">
+            <span class="btn-label">Run research</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="error" class="error hidden"></div>
+      <div id="loading" class="loading hidden">
+        <div class="loading-main"><span class="spinner"></span><span>Researching public sources</span></div>
+        <div class="loading-steps"><span>Discovering profile</span><span>Checking evidence</span><span>Preparing claims</span></div>
+      </div>
+
+      <section id="results" class="hidden">
+        <div class="result-overview">
+          <div class="section-label">RESEARCH SNAPSHOT</div>
+          <div class="overview-line">
+            <div>
+              <h2 class="result-title">Evidence review</h2>
+              <p class="result-sub">A structured view of the subject, evidence quality, and human approval status.</p>
+            </div>
+            <div class="review-status"><span class="pulse"></span><span id="reviewStatusText">Awaiting review</span></div>
+          </div>
+        </div>
+
+        <div class="grid-2 dashboard-grid">
+          <div class="card dashboard-card" id="subject"></div>
+          <div class="card dashboard-card" id="budget"></div>
+        </div>
+
+        <div class="card premium-card claims-card">
+          <div class="section-head">
+            <div>
+              <div class="card-kicker">EVIDENCE REVIEW</div>
+              <h2>Claim review <span class="title-dot">·</span> human gate</h2>
+            </div>
+            <div id="approvedCount" class="approval-count">0 approved</div>
+          </div>
+          <div class="review-note"><span class="note-icon">i</span> Only VERIFIED claims can be approved. Partially verified and unverified claims stay out of the client diagnostic.</div>
+          <div id="claims"></div>
+          <div class="card-actions">
+            <button id="diagnosticBtn" class="primary-btn compact" disabled>Generate client diagnostic <span>→</span></button>
+            <div id="diagnosticLoading" class="small hidden">Generating a source-backed diagnostic…</div>
+          </div>
+        </div>
+
+        <div class="card premium-card" id="diagnostic">
+          <div class="section-head">
+            <div>
+              <div class="card-kicker">CLIENT OUTPUT</div>
+              <h2>One-page diagnostic</h2>
+            </div>
+            <div class="output-badge">Human approved</div>
+          </div>
+          <div class="empty-diagnostic"><div class="empty-icon">↗</div><div><strong>Not generated yet</strong><p>Approve at least one verified claim to unlock the client-facing diagnostic.</p></div></div>
+        </div>
+
+        <div class="card premium-card sources-card">
+          <div class="section-head">
+            <div>
+              <div class="card-kicker">TRACEABILITY</div>
+              <h2>Sources collected</h2>
+            </div>
+            <div class="source-count" id="sourceCount">0 sources</div>
+          </div>
+          <div id="sources"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="/app.js?v=20260916"></script>
+</body>
+</html>
