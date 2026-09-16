@@ -979,7 +979,7 @@ async function generateJson(
   consumeAiCall(budget);
 
   for (const model of models) {
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < 2; attempt++) {
       try {
         const response = await ai.models.generateContent({
           model,
@@ -1026,7 +1026,7 @@ async function generateJson(
         if (!retryable) break;
 
         await sleep(
-          5000 * Math.pow(2, attempt)
+          1500 * Math.pow(2, attempt)
         );
       }
     }
@@ -3190,9 +3190,6 @@ function applyAdjudications(
   }
 
   function qualifiesAsIndependent(source) {
-    // A second company/subject source is corroboration, not independent evidence.
-    // Only genuinely independent or independent-professional sources satisfy the
-    // independent-evidence requirement for VERIFIED claims.
     return Boolean(
       source &&
       [
@@ -3460,9 +3457,15 @@ async function checkEligibility(
   normalizedLocation.includes(normalize(term))
   );
 
-  // Do not short-circuit on the person's location. UAE eligibility can be
-  // established by either the person's UAE location or strong first-party
-  // evidence that the current company is UAE-based.
+  if (!clearlyUaeBasedPerson) {
+   return {
+    status: "not established",
+    note:
+      "The subject's public profile location does not establish that the person is UAE-based.",
+    sources: []
+   };
+  }
+
   const firstParty =
     dedupeSources(sources)
       .map(source => ({
@@ -3664,27 +3667,19 @@ async function runResearch(
 
   let discovery = [];
 
-  for (const query of discoveryQueries) {
-    if (
-      budget.searches >=
-      budget.limits.maxSearchesPerRun
-    ) {
-      break;
-    }
-
-    discovery.push(
-      ...(await tavilySearch(
-        query,
-        budget,
-        {
+  const discoveryResults = await Promise.all(
+    discoveryQueries.map(query =>tavilySearch(query,budget,
+      {
           max_results: 6
-        }
-      ))
-    );
-  }
+      }
+     )
+    )
+  );
 
-  discovery =
-    dedupeSources(discovery);
+  discovery = dedupeSources(
+    discoveryResults.flat()
+  );
+
 
   const subject =
     await discoverSubject(
@@ -3715,24 +3710,16 @@ async function runResearch(
     `"${subject.company}" official website`
   ];
 
-  for (const query of companySearchQueries) {
-    if (
-      budget.searches >=
-      budget.limits.maxSearchesPerRun
-    ) {
-      break;
-    }
+  const companySearchResults = await Promise.all(companySearchQueries.map(query =>tavilySearch(query.trim(),budget,{
+        max_results: 8
+      }
+    )
+   )
+  );
 
-    companyLookup.push(
-      ...(await tavilySearch(
-        query.trim(),
-        budget,
-        {
-          max_results: 8
-        }
-      ))
-    );
-  }
+ companyLookup.push(
+   ...companySearchResults.flat()
+  );
 
   const companyLookupSources =
     dedupeSources(
@@ -3842,28 +3829,23 @@ async function runResearch(
 
   let targeted = [];
 
-  for (const query of targetedQueries) {
-    if (
-      budget.searches >=
-      budget.limits.maxSearchesPerRun
-    ) {
-      break;
-    }
+  const remainingSearches = budget.limits.maxSearchesPerRun - budget.searches;
 
-    targeted.push(
-      ...(await tavilySearch(
-        query,
-        budget,
-        {
-          max_results: 7,
-          include_domains:
-            query.startsWith("site:")
-              ? [companyDomain]
-              : undefined
-        }
-      ))
-    );
-  }
+  const targetedToRun = targetedQueries.slice(0, Math.max(0, remainingSearches));
+
+  const targetedResults = await Promise.all(targetedToRun.map(query => tavilySearch(query,budget,
+      {
+        max_results: 7,
+        include_domains:
+          query.startsWith("site:")
+            ? [companyDomain]
+            : undefined
+      }
+     )
+   )
+  );
+
+targeted = targetedResults.flat();
 
   const context = {
     companyDomain,
@@ -3993,20 +3975,7 @@ async function runResearch(
     );
   }
 
-  const claimEvidence = [];
-
-  for (const claim of claims) {
-    claimEvidence.push(
-      await verifyClaimEvidence(
-        claim,
-        subject,
-        companyDomain,
-        companyLinkedInUrl,
-        researchSources,
-        budget
-      )
-    );
-  }
+  const claimEvidence = await Promise.all(claims.map(claim =>verifyClaimEvidence(claim,subject,companyDomain,companyLinkedInUrl,researchSources,budget)));
 
   const adjudicated =
     await adjudicateAll(
