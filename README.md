@@ -1,7 +1,5 @@
 # Growpido Prospect to Diagnostic
 
-**Evidence-first Track B prototype for the September 2026 Growpido build task.**
-
 Growpido Prospect to Diagnostic turns a public LinkedIn profile into a structured, source-backed founder diagnostic. The workflow is designed around evidence quality, conservative verification, explicit human approval, and controlled usage limits.
 
 ## Overview
